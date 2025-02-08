@@ -1,15 +1,22 @@
-import { Link } from "react-router-dom";
-import { Button } from "flowbite-react";
-
+import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
+import Home from "../pages/Home.jsx";
+import SignUp from "../pages/SignUp.jsx";
+import SignIn from "../pages/SignIn.jsx";
+import Dashboard from "../pages/Dashboard.jsx";
+import Header from "../components/Header.jsx";
 
 function App() {
 
   return (
-    <div>
-      <h1 className='px-2 py-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white'>Abhinav Sharma</h1>
-      <Button>Click me</Button>
-
-    </div>
+    <BrowserRouter>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
