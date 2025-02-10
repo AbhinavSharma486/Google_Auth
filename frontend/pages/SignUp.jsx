@@ -6,13 +6,49 @@ import OAuth from '../components/OAuth';
 
 
 const SignUp = () => {
-
+  const [formData, setFormData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const navigate = useNavigate();
 
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
+  };
 
-  const handleSubmit = () => { };
-  const handleChange = () => { };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!formData.username || !formData.email || !formData.password) {
+      return setErrorMessage('Please fill all the fields');
+    }
+
+    try {
+      setLoading(true);
+      setErrorMessage(null);
+
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await res.json();
+
+      if (data.success === false) {
+        return setErrorMessage("User already exists");
+      }
+
+      setLoading(false);
+
+      if (res.ok) {
+        navigate('/sign-in');
+      }
+    } catch (error) {
+      setErrorMessage(error.message);
+      setLoading(false);
+    }
+  };
+
 
   return (
     <div className='min-h-screen mt-20'>
