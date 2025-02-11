@@ -5,8 +5,8 @@ import { useState } from 'react';
 import OAuth from '../components/OAuth';
 
 
-const SignUp = () => {
-  const [formData, setFormData] = useState([]);
+export default function SignUp() {
+  const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const navigate = useNavigate();
@@ -140,5 +140,3 @@ const SignUp = () => {
     </div>
   );
 };
-
-export default SignUp;
