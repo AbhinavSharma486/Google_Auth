@@ -5,8 +5,7 @@ import SignIn from "../pages/SignIn.jsx";
 import Dashboard from "../pages/Dashboard.jsx";
 import Header from "../components/Header.jsx";
 
-function App() {
-
+export default function App() {
   return (
     <BrowserRouter>
       <Header />
@@ -19,5 +18,3 @@ function App() {
     </BrowserRouter>
   );
 }
-
-export default App;

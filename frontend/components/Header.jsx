@@ -1,13 +1,15 @@
 import { Avatar, Button, Dropdown, DropdownDivider, Navbar, TextInput } from 'flowbite-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { AiOutlineSearch } from 'react-icons/ai';
 import { FaMoon, FaSun } from 'react-icons/fa';
 import { useSelector, useDispatch } from 'react-redux';
 import React, { useEffect, useState } from 'react';
+import { toggleTheme } from "../redux/theme/themeSlice";
 
 const Header = () => {
 
   const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const { theme } = useSelector((state) => state.theme);
 
 
   const handleSubmit = (e) => {
@@ -35,8 +37,9 @@ const Header = () => {
         <Button className='w-12 h-10 sm:inline'
           color='gray'
           pill
+          onClick={() => dispatch(toggleTheme())}
         >
-          <FaSun />
+          {theme === 'light' ? <FaMoon /> : <FaSun />}
         </Button>
 
         {
@@ -50,7 +53,8 @@ const Header = () => {
             >
               <Dropdown.Header>
                 <span className='block text-sm'>@{currentUser.username}</span>
-                <span className='block text-sm font-medium truncate'>{currentUser.email}</span>
+                <span className='block text-sm font-medium truncate'>{currentUser.email}
+                </span>
               </Dropdown.Header>
 
               <Link to={'/dashboard?tab=profile'}>
