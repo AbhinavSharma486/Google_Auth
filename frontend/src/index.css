@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+/* 
 body {
   height: 100vh;
 }
@@ -38,4 +38,4 @@ body {
 
 .dark .post-content a {
   color: red;
-}
+} */

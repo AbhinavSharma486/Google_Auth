@@ -1,7 +1,6 @@
 import { Button, TextInput } from 'flowbite-react';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import 'react-circular-progressbar/dist/styles.css';
 
 
 export default function DashProfile() {

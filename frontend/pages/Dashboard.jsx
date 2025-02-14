@@ -4,7 +4,7 @@ import DashSidebar from '../components/DashSidebar.jsx';
 import DashProfile from '../components/DashProfile.jsx';
 
 
-const Dashboard = () => {
+export default function Dashboard() {
   const location = useLocation();
   const [tab, setTab] = useState('');
 
@@ -30,5 +30,3 @@ const Dashboard = () => {
     </div>
   );
 };
-
-export default Dashboard;
