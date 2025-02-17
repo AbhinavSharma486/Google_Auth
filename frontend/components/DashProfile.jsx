@@ -1,17 +1,51 @@
 import { Button, TextInput } from 'flowbite-react';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { updateStart, updateSuccess, updateFailure } from "../redux/user/userSlice";
+import { useDispatch } from 'react-redux';
 
 
 export default function DashProfile() {
 
+  const dispatch = useDispatch();
   const { currentUser, error, loading } = useSelector((state) => state.user);
-  const [imageFileUrl, setImageFileUrl] = useState(null);
   const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null);
-  const [imageFileUploading, setImageFileUploading] = useState(false);
+  const [formData, setFormData] = useState({});
+  const [showModal, setShowModal] = useState(false);
 
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
 
-  const handleSubmit = () => { };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (Object.keys(formData).length === 0) {
+      return;
+    }
+
+    try {
+      dispatch(updateStart());
+      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        dispatch(updateFailure(data.message));
+      }
+      else {
+        dispatch(updateSuccess(data.message));
+      }
+    } catch (error) {
+      dispatch(updateFailure(error.message));
+    }
+  };
 
 
   return (
@@ -22,17 +56,12 @@ export default function DashProfile() {
       </h1>
 
       <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
-        <input
-          type='file'
-          accept='image/*'
-          hidden
-        />
 
         <div
           className='relative w-32 h-32 self-center cursor-pointer shadow-md overflow-hidden rounded-full'
         >
           <img
-            src={imageFileUrl || currentUser.profilePicture}
+            src={currentUser.profilePicture}
             alt="user"
             className={`rounded-full w-full h-full object-cover border-8 border-[lightgray] ${imageFileUploadProgress &&
               imageFileUploadProgress < 100 &&
@@ -46,24 +75,27 @@ export default function DashProfile() {
           id='username'
           placeholder='username'
           defaultValue={currentUser.username}
+          onChange={handleChange}
         />
         <TextInput
           type='email'
           id='email'
           placeholder='email'
           defaultValue={currentUser.email}
+          onChange={handleChange}
         />
         <TextInput
           type='password'
           id='password'
           placeholder='password'
+          onChange={handleChange}
         />
 
         <Button
           type='submit'
           gradientDuoTone='purpleToBlue'
           outline
-          disabled={loading || imageFileUploading}
+          disabled={loading}
         >
           {loading ? 'Loading...' : 'Update'}
         </Button>
