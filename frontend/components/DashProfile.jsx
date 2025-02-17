@@ -1,8 +1,17 @@
-import { Button, TextInput } from 'flowbite-react';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { updateStart, updateSuccess, updateFailure } from "../redux/user/userSlice";
+import {
+  updateStart,
+  updateSuccess,
+  updateFailure,
+  deleteUserStart,
+  deleteUserSuccess,
+  deleteUserFailure
+} from "../redux/user/userSlice";
 import { useDispatch } from 'react-redux';
+import { Alert, Button, Modal, ModalBody, TextInput } from 'flowbite-react';
+import { HiOutlineExclamationCircle } from 'react-icons/hi';
+
 
 
 export default function DashProfile() {
@@ -47,6 +56,29 @@ export default function DashProfile() {
     }
   };
 
+  const handleDeleteUser = async () => {
+    setShowModal(false);
+
+    try {
+      dispatch(deleteUserStart());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: 'DELETE',
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        dispatch(deleteUserFailure(data.message));
+      }
+      else {
+        dispatch(deleteUserSuccess(data.message));
+      }
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
+    }
+
+  };
+
 
   return (
     <div className='max-w-lg mx-auto p-3 w-full'>
@@ -61,7 +93,7 @@ export default function DashProfile() {
           className='relative w-32 h-32 self-center cursor-pointer shadow-md overflow-hidden rounded-full'
         >
           <img
-            src={currentUser.profilePicture}
+            src={currentUser?.profilePicture}
             alt="user"
             className={`rounded-full w-full h-full object-cover border-8 border-[lightgray] ${imageFileUploadProgress &&
               imageFileUploadProgress < 100 &&
@@ -74,14 +106,14 @@ export default function DashProfile() {
           type='text'
           id='username'
           placeholder='username'
-          defaultValue={currentUser.username}
+          defaultValue={currentUser?.username}
           onChange={handleChange}
         />
         <TextInput
           type='email'
           id='email'
           placeholder='email'
-          defaultValue={currentUser.email}
+          defaultValue={currentUser?.email}
           onChange={handleChange}
         />
         <TextInput
@@ -109,6 +141,31 @@ export default function DashProfile() {
           Sign Out
         </span>
       </div>
+
+      <Modal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        popup
+        size='md'
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className='text-center'>
+            <HiOutlineExclamationCircle className='h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto' />
+            <h3 className='mb-5 text-lg text-gray-500 dark:text-gray-400'>
+              Are you sure you want to delete your account?
+            </h3>
+            <div className='flex justify-center gap-4'>
+              <Button color='failure' onClick={handleDeleteUser}>
+                Yes, I'm sure
+              </Button>
+              <Button color='gray' onClick={() => setShowModal(false)}>
+                No, cancel
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div >
   );
 }
